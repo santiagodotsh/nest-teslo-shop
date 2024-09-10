@@ -55,10 +55,6 @@ pids
 # DB
 /postgres
 
-#Static
-/public/products/*
-!/public/products/.gitkeep
-
 # Uploads
 /static/uploads/*
 !/static/uploads/.gitkeep
