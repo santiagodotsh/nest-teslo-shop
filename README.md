@@ -29,6 +29,12 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Run SEED
+
+```bash
+$ http://localhost:3000/api/seed
+```
+
 ## Run tests
 
 ```bash
