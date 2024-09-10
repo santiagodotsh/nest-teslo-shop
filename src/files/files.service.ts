@@ -1,10 +1,13 @@
-import { promises as fs } from 'fs'
+import { existsSync, promises as fs } from 'fs'
 import { extname, join } from 'path'
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { v4 as uuid  } from 'uuid'
 
 @Injectable()
 export class FilesService {
+  constructor(private readonly configService: ConfigService) {}
+
   async uploadLocalImage(file: Express.Multer.File) {
     const uploadPath = join(__dirname, '..', '..', 'static', 'uploads')
 
@@ -17,6 +20,17 @@ export class FilesService {
 
     await fs.writeFile(filePath, file.buffer)
 
-    return { image: fileName }
+    return {
+      secureUrl: `${this.configService.get('HOST_API')}/files/product/${fileName}`
+    }
+  }
+
+  getLocalImage(imageName: string) {
+    const imagePath = join(__dirname, '..', '..', 'static', 'uploads', imageName)
+
+    if(!existsSync(imagePath))
+      throw new BadRequestException(`Product image ${imageName} not found`)
+
+    return imagePath
   }
 }
