@@ -55,8 +55,13 @@ pids
 # DB
 /postgres
 
+#Static
+/public/products/*
+!/public/products/.gitkeep
+
 # Uploads
 /static/uploads/*
+!/static/uploads/.gitkeep
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
