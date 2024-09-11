@@ -6,11 +6,13 @@ import {
   UnauthorizedException
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { JwtService } from '@nestjs/jwt'
 import { Repository } from 'typeorm'
 import { hashSync, compareSync } from 'bcrypt'
 import { User } from './entities/user.entity'
 import { SignupUserDto } from './dto/signup-user.dto'
 import { SigninUserDto } from './dto/signin-user.dto'
+import { JwtPayload } from './interfaces/jwt-payload.interface'
 
 @Injectable()
 export class AuthService {
@@ -18,7 +20,9 @@ export class AuthService {
 
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+
+    private readonly jwtService: JwtService
   ) { }
 
   async signup(signupUserDto: SignupUserDto) {
@@ -34,7 +38,10 @@ export class AuthService {
 
       delete user.password
 
-      return user
+      return {
+        ...user,
+        token: this.getJwtToken({ email: user.email})
+      }
     } catch (error) {
       this.handleDBExceptions(error)
     }
@@ -57,7 +64,16 @@ export class AuthService {
     if(!compareSync(password, user.password))
       throw new UnauthorizedException('Invalid credentials (password)')
 
-    return user
+    return {
+      ...user,
+      token: this.getJwtToken({ email: user.email})
+    }
+  }
+
+  private getJwtToken(payload: JwtPayload) {
+    const token = this.jwtService.sign(payload)
+
+    return token
   }
 
   private handleDBExceptions(error: any): never {
