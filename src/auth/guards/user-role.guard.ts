@@ -7,13 +7,14 @@ import {
   InternalServerErrorException
 } from '@nestjs/common'
 import { User } from '../entities/user.entity'
+import { META_ROLES } from '../decorators/role-protected.decorator'
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(ctx: ExecutionContext): boolean | never {
-    const validRoles: string[] = this.reflector.get('roles', ctx.getHandler())
+    const validRoles: string[] = this.reflector.get(META_ROLES, ctx.getHandler())
 
     if(!validRoles) return true
     if(validRoles.length === 0) return true
