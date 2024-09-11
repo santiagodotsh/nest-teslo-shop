@@ -5,10 +5,12 @@ import {
   Body,
   Get,
   UseGuards,
-  Headers
+  Headers,
+  SetMetadata
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { AuthService } from './auth.service'
+import { UserRoleGuard } from './guards/user-role.guard'
 import { GetUSer } from './decorators/get-user.decorator'
 import { RawHeaders } from './decorators/raw-headers.decorator'
 import { User } from './entities/user.entity'
@@ -31,7 +33,7 @@ export class AuthController {
 
   @Get('private')
   @UseGuards(AuthGuard())
-  testingPrivateRoute(
+  privateRoute(
     @GetUSer() user: User,
     @GetUSer('email') email: string,
     @RawHeaders() rawHeaders: string,
@@ -43,5 +45,12 @@ export class AuthController {
       rawHeaders,
       headers
     }
+  }
+
+  @Get('private2')
+  @SetMetadata('roles', ['admin', 'super-admin'])
+  @UseGuards(AuthGuard(), UserRoleGuard)
+  privateRoute2(@GetUSer() user: User) {
+    return user
   }
 }

@@ -3,10 +3,11 @@ import {
   ExecutionContext,
   InternalServerErrorException
 } from '@nestjs/common'
+import { User } from '../entities/user.entity'
 
 export const GetUSer = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
-    const { user } = ctx.switchToHttp().getRequest()
+    const { user }: { user: User } = ctx.switchToHttp().getRequest()
 
     if(!user)
       throw new InternalServerErrorException('User not found (request)')
