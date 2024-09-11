@@ -27,6 +27,6 @@ export class AuthController {
   @Get('private')
   @UseGuards(AuthGuard())
   testingPrivateRoute() {
-    return 'hola'
+    return 'private route'
   }
 }
