@@ -1,12 +1,17 @@
+import { IncomingHttpHeaders } from 'http'
 import {
   Controller,
   Post,
   Body,
   Get,
-  UseGuards
+  UseGuards,
+  Headers
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { AuthService } from './auth.service'
+import { GetUSer } from './decorators/get-user.decorator'
+import { RawHeaders } from './decorators/raw-headers.decorator'
+import { User } from './entities/user.entity'
 import { SignupUserDto } from './dto/signup-user.dto'
 import { SigninUserDto } from './dto/signin-user.dto'
 
@@ -26,7 +31,17 @@ export class AuthController {
 
   @Get('private')
   @UseGuards(AuthGuard())
-  testingPrivateRoute() {
-    return 'private route'
+  testingPrivateRoute(
+    @GetUSer() user: User,
+    @GetUSer('email') email: string,
+    @RawHeaders() rawHeaders: string,
+    @Headers() headers: IncomingHttpHeaders
+  ) {
+    return {
+      user,
+      email,
+      rawHeaders,
+      headers
+    }
   }
 }
