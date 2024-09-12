@@ -13,6 +13,7 @@ import { UserRoleGuard } from './guards/user-role.guard'
 import { GetUSer } from './decorators/get-user.decorator'
 import { RawHeaders } from './decorators/raw-headers.decorator'
 import { RoleProtected } from './decorators/role-protected.decorator'
+import { Auth } from './decorators/auth.decorator'
 import { User } from './entities/user.entity'
 import { SignupUserDto } from './dto/signup-user.dto'
 import { SigninUserDto } from './dto/signin-user.dto'
@@ -52,6 +53,12 @@ export class AuthController {
   @RoleProtected(ValidRoles.admin, ValidRoles.superUser)
   @UseGuards(AuthGuard(), UserRoleGuard)
   privateRoute2(@GetUSer() user: User) {
+    return user
+  }
+
+  @Get('private3')
+  @Auth(ValidRoles.admin, ValidRoles.superUser)
+  privateRoute3(@GetUSer() user: User) {
     return user
   }
 }
