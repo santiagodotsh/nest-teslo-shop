@@ -10,6 +10,7 @@ import { DataSource, Repository } from 'typeorm'
 import { isUUID } from 'class-validator'
 import { Product } from './entities/product.entity'
 import { ProductImage } from './entities/product-image.entity'
+import { User } from '../auth/entities/user.entity'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { PaginationDto } from '../common/dto/pagination.dto'
@@ -28,13 +29,14 @@ export class ProductsService {
     private readonly dataSource: DataSource
   ) { }
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
       const { images = [], ...rest } = createProductDto
 
       const product = this.productRepository.create({
         ...rest,
-        images: images.map(url => this.productImageRepository.create({ url }))
+        images: images.map(url => this.productImageRepository.create({ url })),
+        user
       })
 
       await this.productRepository.save(product)
@@ -94,7 +96,7 @@ export class ProductsService {
     }
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const { images, ...rest } = updateProductDto
 
     const product = await this.productRepository.preload({ id, ...rest })
@@ -115,6 +117,8 @@ export class ProductsService {
       } else {
 
       }
+
+      product.user = user
 
       await queryRunner.manager.save(product)
       await queryRunner.commitTransaction()

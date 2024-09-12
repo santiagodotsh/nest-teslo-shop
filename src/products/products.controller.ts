@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common'
 import { ProductsService } from './products.service'
 import { Auth } from '../auth/decorators/auth.decorator'
+import { GetUSer } from '../auth/decorators/get-user.decorator'
+import { User } from 'src/auth/entities/user.entity'
 import { CreateProductDto } from './dto/create-product.dto'
 import { UpdateProductDto } from './dto/update-product.dto'
 import { PaginationDto } from '../common/dto/pagination.dto'
@@ -21,8 +23,11 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto)
+  create(
+    @Body() createProductDto: CreateProductDto,
+    @GetUSer() user: User
+  ) {
+    return this.productsService.create(createProductDto, user)
   }
 
   @Get()
@@ -38,9 +43,10 @@ export class ProductsController {
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateProductDto: UpdateProductDto
+    @Body() updateProductDto: UpdateProductDto,
+    @GetUSer() user: User
   ) {
-    return this.productsService.update(id, updateProductDto)
+    return this.productsService.update(id, updateProductDto, user)
   }
 
   @Delete(':id')
