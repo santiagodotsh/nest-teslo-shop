@@ -8,6 +8,7 @@ import {
   Headers
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { AuthService } from './auth.service'
 import { UserRoleGuard } from './guards/user-role.guard'
 import { GetUSer } from './decorators/get-user.decorator'
@@ -19,11 +20,17 @@ import { SignupUserDto } from './dto/signup-user.dto'
 import { SigninUserDto } from './dto/signin-user.dto'
 import { ValidRoles } from './interfaces/valid-roles'
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
+  @ApiResponse({
+    status: 201,
+    description: 'User was created',
+    type: User
+  })
   signupUser(@Body() signupUserDto: SignupUserDto) {
     return this.authService.signup(signupUserDto)
   }

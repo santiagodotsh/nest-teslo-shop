@@ -11,15 +11,22 @@ import {
   UseInterceptors
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { FilesService } from './files.service'
+import { ProductImage } from '../products/entities/product-image.entity'
 
+@ApiTags('Files')
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Post('product')
   @UseInterceptors(FileInterceptor('image'))
+  @ApiResponse({
+    status: 201,
+    description: 'File was saved'
+  })
   uploadProductImage(
     @UploadedFile(
       new ParseFilePipe({
@@ -35,6 +42,11 @@ export class FilesController {
   }
 
   @Get('product/:imageName')
+  @ApiResponse({
+    status: 200,
+    description: 'Found image',
+    type: ProductImage
+  })
   findProductImage(
     @Res() res: Response,
     @Param('imageName') imageName: string
