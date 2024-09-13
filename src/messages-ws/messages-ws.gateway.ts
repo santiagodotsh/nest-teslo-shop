@@ -30,6 +30,6 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
 
   @SubscribeMessage('message-from-client')
   handleMessageFromClient(client: Socket, { message }: NewMessageDto) {
-    client.broadcast.emit('message-from-server', { fullName: 'gatito', message })
+    this.webSocketServer.emit('message-from-server', { fullName: 'gatito', message })
   }
 }
