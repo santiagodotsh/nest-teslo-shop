@@ -35,6 +35,12 @@ $ npm run start:prod
 $ http://localhost:3000/api/seed
 ```
 
+## WebSocket connection (messages)
+
+```bash
+$ http://localhost:3000/socket.io/socket.io.js
+```
+
 ## Run tests
 
 ```bash
