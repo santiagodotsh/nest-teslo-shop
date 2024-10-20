@@ -55,7 +55,10 @@ export class AuthService {
       select: {
         id: true,
         email: true,
-        password: true
+        password: true,
+        fullName: true,
+        isActive: true,
+        roles: true
       }
     })
 
@@ -65,6 +68,8 @@ export class AuthService {
     if(!compareSync(password, user.password))
       throw new UnauthorizedException('Invalid credentials (password)')
 
+    delete user.password
+    
     return {
       ...user,
       token: this.getJwtToken({ id: user.id})
